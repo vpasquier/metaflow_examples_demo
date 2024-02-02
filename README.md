@@ -1,11 +1,20 @@
 # Prolaio DS Demo
 
-## Example of Google Collab running on top of Bigquery and GCS
+## Basic tooling: Google Collab running on top of Bigquery and GCS
 
-- Please copy and paste the content of [demo_collab.ipynb](demo_collab.ipynb) in Google Collab
-- Run the python notebook in collab to see the results and the different cells executions
+The goal is to show how to run a python notebook in Google Collab on top of Google Bigquery and Google Storage:
 
-## Example of Metaflow running two model training with same dataset
+- Using the Google Python Client
+- Using custom libraries like `prolaiotoolkit`
+
+Please see this notebook:
+
+## Advanced tooling: Metaflow
+
+The goal is to show how to use Metaflow to:
+- Run in the cloud very easily a notebook
+- Train/Evaluate/Serve models
+- Save models and promote them in production
 
 To run locally:
 - `poetry install` to install the project
