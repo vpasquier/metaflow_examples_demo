@@ -16,4 +16,8 @@ To run locally:
 
 ## Google Vertex Registry
 
-Here is an [example](saving_model_vertex.py) of Google Model Registry
+Here is an [example](model_vertex_registry/saving_model_vertex.py) of Google Model Registry
+
+## Running notebook in metaflow
+
+Here is an [example](notebook_in_metaflow/notebook_flow.py) of Google Model Registry
