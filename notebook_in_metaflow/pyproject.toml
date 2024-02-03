@@ -1,23 +1,21 @@
 [tool.poetry]
-name = "prolaio-ds-demo"
+name = "prolaio-ds-demo-notebook-in-metaflow"
 version = "0.1.0"
 description = ""
 authors = ["Vladimir Pasquier <1112241+vpasquier@users.noreply.github.com>"]
-readme = "README.md"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.11"
 metaflow = "^2.11.1"
-google-cloud-storage = "^2.14.0"
 google-auth = "^2.27.0"
 kubernetes = "^29.0.0"
+fastcore = "^1.5.29"
 pandas = "^2.2.0"
 google-cloud = "^0.34.0"
-scikit-learn = "^1.4.0"
-google-cloud-bigquery = "^3.17.1"
-db-dtypes = "^1.2.0"
-matplotlib = "^3.8.2"
-
+metaflow-card-html = "^1.0.2"
+google-cloud-bigquery = {extras = ["all"], version = "^3.14.1"}
+papermill = "^2.5.0"
+google-cloud-storage = "^2.14.0"
 
 [build-system]
 requires = ["poetry-core"]

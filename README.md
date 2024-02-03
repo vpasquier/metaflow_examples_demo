@@ -1,25 +1,19 @@
 # Prolaio DS Demo
 
-## Basic tooling: Google Collab running on top of Bigquery and GCS
+## Google Collab running on top of Bigquery and GCS
 
-The goal is to show how to run a python notebook in Google Collab on top of Google Bigquery and Google Storage:
+The goal is to show how to run a python notebook in Google Collab on top of Google Bigquery and Google Storage.
 
-- Using the Google Python Client
-- Using custom libraries like `prolaiotoolkit`
+Please see this [notebook](https://console.cloud.google.com/vertex-ai/colab/notebooks?authuser=4&hl=en&project=prolaio-data-testing&activeNb=projects%2Fprolaio-data-testing%2Flocations%2Fus-east1%2Frepositories%2Fd74ee767-34f2-480f-8c86-569787605ab1)
 
-Please see this notebook:
+Here a [local copy](demo_collab.ipynb)
 
-## Advanced tooling: Metaflow
-
-The goal is to show how to use Metaflow to:
-- Run in the cloud very easily a notebook
-- Train/Evaluate/Serve models
-- Save models and promote them in production
+## Metaflow
 
 To run locally:
 - `poetry install` to install the project
-- `poetry run python -m demo_metaflow.py run`
+- `poetry run python -m demo_metaflow_parallel.py run`
 
-To run on k8s with the metaflow UI:
-- `poetry run python -m demo_metaflow.py argo-workflows create`
-- `poetry run python -m demo_metaflow.py argo-workflows trigger`
+## Google Vertex Registry
+
+Here is an [example](saving_model_vertex.py) of Google Model Registry
