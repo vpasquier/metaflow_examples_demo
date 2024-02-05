@@ -1,13 +1,9 @@
-import os
-
-from metaflow import FlowSpec, card, current, project, step
+from metaflow import FlowSpec, card, current, kubernetes, project, step
 from metaflow.cards import Image
 
-
-def install_dependencies():
-    os.system(
-        "pip install pandas google-cloud-bigquery scikit-learn db-dtypes matplotlib"
-    )
+METAFLOW_IMAGE = (
+    "us-east1-docker.pkg.dev/prolaio-data-testing/docker/metaflow-image-job"
+)
 
 
 @project(name="demo")
@@ -15,9 +11,9 @@ class DemoMetaflowParallel(FlowSpec):
 
     # nb_iter = Parameter("nb_iter", help="Number of iterations", default="[100000, 2000000]", type=JSONType)
 
+    @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @step
     def start(self):
-        install_dependencies()
         import pandas as pd
         from google.cloud import bigquery
         from sklearn.model_selection import train_test_split
@@ -47,28 +43,30 @@ class DemoMetaflowParallel(FlowSpec):
 
         self.next(self.random_forest_1, self.random_forest_2)
 
+    @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @card()
     @step
     def random_forest_1(self):
-        install_dependencies()
         self.nb_iter = 100
         self.score = self._train_model()
         self.next(self.join)
 
+    @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @card()
     @step
     def random_forest_2(self):
-        install_dependencies()
         self.nb_iter = 200
         self.score = self._train_model()
         self.next(self.join)
 
+    @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @step
     def join(self, inputs):
         for input in inputs:
             print(f"Score: {input.score} for {input.nb_iter} iterations")
         self.next(self.end)
 
+    @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @step
     def end(self):
         print("End of execution")
