@@ -70,26 +70,13 @@ class DemoMetaflowParallel(FlowSpec):
             X, y, test_size=0.2, random_state=42
         )
 
-        self.next(self.random_forest_1, self.random_forest_2)
+        self.next(self.random_forest_1)
 
     @card()
     @step
     def random_forest_1(self):
         self.nb_iter = 100
-        self.score = self._train_model()
-        self.next(self.join)
-
-    @card()
-    @step
-    def random_forest_2(self):
-        self.nb_iter = 200
-        self.score = self._train_model()
-        self.next(self.join)
-
-    @step
-    def join(self, inputs):
-        for input in inputs:
-            print(f"Score: {input.score} for {input.nb_iter} iterations")
+        self.score, self.model = self._train_model()
         self.next(self.end)
 
     @step
@@ -135,7 +122,7 @@ class DemoMetaflowParallel(FlowSpec):
                 )
             )
         )
-        return score
+        return score, rf_random
 
 
 if __name__ == "__main__":

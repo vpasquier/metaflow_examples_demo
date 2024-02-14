@@ -21,6 +21,7 @@ matplotlib = "^3.8.2"
 wandb = "^0.16.3"
 fastcore = "^1.5.29"
 torch = "^2.2.0"
+debugpy = "^1.8.1"
 
 
 [build-system]
