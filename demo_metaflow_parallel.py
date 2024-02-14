@@ -52,19 +52,15 @@ def install_dependencies() -> None:
         "pip install -i https://northamerica-northeast1-python.pkg.dev/prolaio-data-testing/pypi/simple/ prolaiotoolkit"
     )
 
-
-@wandb_log(
-    datasets=True,
-    models=True,
-    others=True,
-    settings=wandb.Settings(project="metaflow_integration"),
-)
 @project(name="demo")
 class DemoMetaflowParallel(FlowSpec):
 
-    # nb_iter = Parameter("nb_iter", help="Number of iterations", default="[100000, 2000000]", type=JSONType)
-
-    # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
+    @wandb_log(
+        datasets=True,
+        models=True,
+        others=True,
+        settings=wandb.Settings(project="metaflow_integration"),
+    )
     @step
     def start(self):
         import pandas as pd
@@ -98,6 +94,12 @@ class DemoMetaflowParallel(FlowSpec):
 
     # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @card()
+    @wandb_log(
+        datasets=True,
+        models=True,
+        others=True,
+        settings=wandb.Settings(project="metaflow_integration"),
+    )
     @step
     def random_forest_1(self):
         self.nb_iter = 100
