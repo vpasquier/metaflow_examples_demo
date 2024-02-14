@@ -1,14 +1,27 @@
-import os
-
-from metaflow import FlowSpec, card, current, project, step
+from metaflow import FlowSpec, card, current, kubernetes, project, step
 from metaflow.cards import Image
+import os
 
 METAFLOW_IMAGE = (
     "us-east1-docker.pkg.dev/prolaio-data-testing/docker/metaflow-image-job"
 )
 
 
+from wandb.integration.metaflow import wandb_log
+import wandb
+
+
 def install_dependencies() -> None:
+    # key = os.popen("cat $GOOGLE_APPLICATION_CREDENTIALS | base64").read().strip()
+    # extra_index_url = (
+    #     f"https://_json_key_base64:{key}@northamerica-northeast1-python.pkg.dev"
+    #     "/prolaio-data-testing/pypi/simple/"
+    # )
+    # command = (
+    #     "pip config set global.extra-index-url "
+    #     "https://northamerica-northeast1-python.pkg.dev/prolaio-data-testing/pypi/simple/"
+    # )
+    # os.system(command)
     os.system('pip install keyrings.google-artifactregistry-auth~="1.1.2"')
     os.system('pip install pandas~="2.0.1"')
     os.system('pip install neurokit2~="0.2.4"')
@@ -21,6 +34,7 @@ def install_dependencies() -> None:
     os.system('pip install db-dtypes~="1.2.0"')
     os.system('pip install fsspec~="2023.12.2"')
     os.system('pip install gcsfs~="2023.12.2.post1"')
+    # Prolaiotoolkit sub deps to remove once google artifact is full of packages
     os.system('pip install google-api-python-client~="2.83.0"')
     os.system('pip install aws-secretsmanager-caching~="1.1.1.5"')
     os.system('pip install awswrangler~="3.3.0"')
@@ -33,14 +47,20 @@ def install_dependencies() -> None:
     os.system("pip install numpy")
     os.system("pip install reportlab")
     os.system("pip install matplotlib")
+    os.system("pip install fastcore wandb pytorch")
     os.system(
         "pip install -i https://northamerica-northeast1-python.pkg.dev/prolaio-data-testing/pypi/simple/ prolaiotoolkit"
     )
 
-
 @project(name="demo")
 class DemoMetaflowParallel(FlowSpec):
 
+    @wandb_log(
+        datasets=True,
+        models=True,
+        others=True,
+        settings=wandb.Settings(project="metaflow_integration"),
+    )
     @step
     def start(self):
         import pandas as pd
@@ -70,28 +90,38 @@ class DemoMetaflowParallel(FlowSpec):
             X, y, test_size=0.2, random_state=42
         )
 
-        self.next(self.random_forest_1, self.random_forest_2)
+        self.next(self.random_forest_1)
 
+    # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @card()
+    @wandb_log(
+        datasets=True,
+        models=True,
+        others=True,
+        settings=wandb.Settings(project="metaflow_integration"),
+    )
     @step
     def random_forest_1(self):
         self.nb_iter = 100
         self.score = self._train_model()
         self.next(self.join)
 
-    @card()
-    @step
-    def random_forest_2(self):
-        self.nb_iter = 200
-        self.score = self._train_model()
-        self.next(self.join)
+    # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
+    # @card()
+    # @step
+    # def random_forest_2(self):
+    #     self.nb_iter = 200
+    #     self.score = self._train_model()
+    #     self.next(self.join)
 
+    # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @step
-    def join(self, inputs):
-        for input in inputs:
-            print(f"Score: {input.score} for {input.nb_iter} iterations")
+    def join(self):
+        # for input in inputs:
+        #     print(f"Score: {input.score} for {input.nb_iter} iterations")
         self.next(self.end)
 
+    # @kubernetes(image=METAFLOW_IMAGE, cpu=4, memory=16384)
     @step
     def end(self):
         print("End of execution")
